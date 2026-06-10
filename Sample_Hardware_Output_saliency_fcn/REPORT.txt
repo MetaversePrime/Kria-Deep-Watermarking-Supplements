@@ -1,0 +1,10 @@
+TARIH: 20260115_024225
+ID: 40020000016C60084C11C245
+------------------------------------------------------------
+Clean      | BER: 0.021 | Direct
+Noise      | BER: 0.104 | Direct
+Blur       | BER: 0.031 | Direct
+JPEG_90    | BER: 0.068 | Direct
+JPEG_50    | BER: 0.151 | Direct
+Rot_2deg   | BER: 0.073 | A:-2
+Crop_10    | BER: 0.490 | Clean
