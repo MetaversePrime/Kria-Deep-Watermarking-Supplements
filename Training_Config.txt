@@ -1,0 +1,50 @@
+=====================================================================
+TRAINING CONFIGURATION & HYPERPARAMETERS
+Paper: Real-Time Saliency-Guided Deep Watermarking on Kria KV260
+=====================================================================
+
+1. DATASET PARAMETERS
+---------------------------------------------------------------------
+- Dataset Name          : DUTS-TR (Saliency Detection Dataset)
+- Total Images          : 10,553
+- Input Resolution      : 256 x 256 pixels (DPU Spatial Constraints)
+- Color Space           : RGB (Normalized to [-1.0, 1.0])
+
+2. MODEL ARCHITECTURE
+---------------------------------------------------------------------
+- Embedder (Encoder)    : Custom DPU-Optimized CNN (Conv-BN-LeakyReLU)
+- Extractor (Decoder)   : Custom DPU-Optimized CNN with HPF Preprocessing
+- DPU LeakyReLU Alpha   : 0.1015625 (Strictly quantized for Xilinx B4096)
+- Payload Capacity      : 96 Bits (Strictly hardcoded to PL Device DNA)
+
+3. OPTIMIZATION & LOSS
+---------------------------------------------------------------------
+- Optimizer             : Adam
+- Learning Rate (LR)    : 0.001 (1e-3)
+- Batch Size            : 64
+- Epochs                : 20
+- Loss Function         : Binary Cross Entropy with Logits (BCEWithLogitsLoss) for payload, MSE for image fidelity.
+
+4. CURRICULUM LEARNING (EMBEDDING STRENGTH DYNAMICS)
+---------------------------------------------------------------------
+To ensure the extractor network successfully converges on sub-threshold 
+signals, a linear decay strategy was applied to the global embedding 
+strength (alpha) over the 20 epochs.
+
+- Initial Strength      : 1.50  (High visibility, easy extraction)
+- Final Strength        : 0.15  (Low visibility, forces robust extraction)
+- Decay Strategy        : Linear Decay per epoch
+
+5. HARDWARE ENVIRONMENT
+---------------------------------------------------------------------
+- Offline Training      : NVIDIA GPU (CUDA), PyTorch Framework
+- Edge Deployment       : Xilinx Kria KV260 Vision AI Starter Kit
+- Edge Target Core      : DPUCZDX8G_ISA1_B4096
+- Edge Precision        : INT8 Quantized (via AMD/Xilinx Vitis-AI 3.0)
+
+=====================================================================
+Note: Due to pending intellectual property (IP) and patent processes 
+(Application No: 2026/007639), the raw PyTorch (.py) architecture 
+definitions and hardware .xmodel files are omitted. The parameters 
+above reflect the exact settings used to compile the final hardware models.
+=====================================================================
